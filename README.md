@@ -1,11 +1,8 @@
 # sun
-/*!
- * MindPlus
- * mpython
- *
- */
 #include <MPython.h>
+
 #include <DFRobot_Iot.h>
+
 // 函数声明
 void obloqMqttEventT0(String& message);
 // 静态常量
