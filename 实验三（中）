@@ -1,0 +1,51 @@
+/*!
+ * MindPlus
+ * mpython
+ *
+ */
+#include <MPython.h>
+#include <DFRobot_Iot.h>
+#include <mPython_tinywebdb.h>
+#include <DFRobot_HuskyLens.h>
+// 创建对象
+DFRobot_Iot       myIot;
+mPython_TinyWebDB mydb;
+DFRobot_HuskyLens huskylens;
+
+
+// 主程序开始
+void setup() {
+	mPython.begin();
+	myIot.wifiConnect("HUAWEI nova 3", "qwe123asd");
+	while (!myIot.wifiStatus()) {yield();}
+	display.setCursorLine(1);
+	display.printLine(myIot.getWiFiLocalIP());
+	mydb.setServerParameter("http://tinywebdb.appinventor.space/api", "lnsun","0f087c10");
+	huskylens.beginI2CUntilSuccess();
+	huskylens.writeAlgorithm(ALGORITHM_FACE_RECOGNITION);
+}
+void loop() {
+	huskylens.request();
+	if (huskylens.isAppearDirect(HUSKYLENSResultBlock)) {
+		if (huskylens.isLearned(1)) {
+			display.setCursorLine(2);
+			display.printLine(mydb.getTag("1"));
+			rgb.write(0, 0x0000FF);
+		}
+		else if (huskylens.isLearned(2)) {
+			display.setCursorLine(2);
+			display.printLine(mydb.getTag("2"));
+			rgb.write(0, 0xFF6666);
+		}
+		else if (huskylens.isLearned(3)) {
+			display.setCursorLine(2);
+			display.printLine(mydb.getTag("3"));
+			rgb.write(0, 0x00FF00);
+		}
+		else {
+			rgb.write(0, 0xFFFFFF);
+			display.setCursorLine(2);
+			display.printLine("人脸识别未录入或未对准人脸！");
+		}
+	}
+}
